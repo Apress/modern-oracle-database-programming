@@ -1,6 +1,6 @@
-# modern-oracle-database-programming
+# Apress Source Code
 
-This repository accompanies [Modern Oracle Database Programming: Level Up Your Skill Set to Oracle's Latest and Most Powerful Features in SQL, PL/SQL, and JSON] (https://www.link.springer.com/book/10.1007/9781484291658) by Alex Nuijten and Patrick Barel
+This repository accompanies [Modern Oracle Database Programming: Level Up Your Skill Set to Oracle's Latest and Most Powerful Features in SQL, PL/SQL, and JSON ](https://www.link.springer.com/book/10.1007/9781484291658) by Alex Nuijten and Patrick Barel (Apress, 2023).
 
 [comment]: #cover
 ![Cover image](9781484291658.jpg)
