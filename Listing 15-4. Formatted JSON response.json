@@ -1,0 +1,24 @@
+{
+   "MRData": {
+      "xmlns": "http:\/\/ergast.com\/mrd\/1.5",
+      "series": "f1",
+      "url": "http://ergast.com/api/f1/current.json",
+      "limit": "30",
+      "offset": "0",
+      "total": "22",
+      "RaceTable": {
+         "season": "2022",
+         "Races": [
+            {
+               "season": "2022",
+               "round": "1",
+               "url": "http:\/\/en.wikipedia.org\/wiki\/2022_Bahrain_Grand_Prix",
+               "raceName": "Bahrain Grand Prix",
+               // omitted for brevity
+               // there are details of 22 races
+               // in this section, such as circuits
+            }
+         ]
+      }
+   }
+}
