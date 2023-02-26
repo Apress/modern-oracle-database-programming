@@ -23,7 +23,7 @@ drop table file_ext purge
 begin
  dbms_cloud.create_external_table(
     table_name =>'FILE_EXT',
-    credential_name =>'EXTERNALTABLES',
+    credential_name =>'F1DATA_CREDENTIALS',
     file_uri_list =>'<<URL Path (URI)>>/drivers.csv',
     format => json_object('ignoremissingcolumns' value 'true', 'removequotes' value 'true'),
     column_list => 'line      char(1000)'
