@@ -19,6 +19,32 @@ The table schema that user *f1data* has when the workspace is up and running - t
 
 ![](images/database-schema-f1data.png)
 
+## Steps in Starting Gitpod Workspace
+
+The stages the workspace goes through are:
+1. Download (Pull) Oracle Database 23c Free container image  
+2. Run Oracle Database 23c Free container 
+3. Download/install SQLcl
+4. Connect to database as SYS and create user f1data
+
+![](images/stage-A.png)
+
+5. Grant privileges to user f1data 
+6. Create tables, comments, package & function, 
+7. Grants and Synonyms
+
+![](images/stage-B.png)
+
+8. Create Database Directory Object on /tmp/f1data inside the container and grant directory to user f1data
+9. Create External Table and insert data from csv files into the f1data tables - more than 500K records (especially laptimes!)
+
+![](images/stage-C.png)
+
+Once the steps are complete, you can explore the database objects through the VS Code addin Oracle Explorer:
+![](images/vscode-oracleexplorer.png)
+
+### Note: Actual Formula 1 Data
+
 Note: actual data regarding Formula 1 results is downloaded from http://ergast.com/downloads/f1db_csv.zip . This zip-file is refreshed frequently with the latest results. There is a risk that a future version of that file will not have the exact same structure as the data import routines in file F1Data_Import_csv.sql expect - or that this file for whatever reason is no longer available. To prepare for that eventuality, a copy taken on 14th April 2023 is stored in directory *historical_data*. In case the file cannot be retrieved successfully from http://ergast.com/downloads, you can use this file as an alternative. 
 
 In that case, you will have to create a new terminal window and execute these steps:
