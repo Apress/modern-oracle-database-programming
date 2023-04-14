@@ -11,6 +11,9 @@
  * Filename : F1Data_Create_User.sql
  * Remarks  : Run this script as the admin user
  */
+
+ALTER SESSION SET CONTAINER=FREEPDB1 SERVICE=FREEPDB1;
+
 drop user f1data cascade
 /
 
