@@ -299,7 +299,7 @@ order  by rn
 commit
 /
 
-prompt driverstandings
+prompt driverstandings - more than 33K records
 insert into f1data.driverstandings
 with thefile as (
 select line, rownum rn
@@ -328,7 +328,7 @@ order  by rn
 commit
 /
 
-prompt laptimes
+prompt laptimes - moren than 500K records
 insert into f1data.laptimes
 with thefile as (
 select line, rownum rn
@@ -765,3 +765,4 @@ order  by rn
 commit
 /
 
+EXIT

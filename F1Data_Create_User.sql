@@ -84,3 +84,5 @@ grant CREATE TYPE to f1data
 /
 grant CREATE VIEW to f1data
 /
+
+exit
