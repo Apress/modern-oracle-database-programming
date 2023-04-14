@@ -14,18 +14,26 @@ SQLcl command line tool (see [SQLcl introduction](https://www.oracle.com/databas
 alias sql="/workspace/modern-oracle-database-programming/sqlcl/bin/sql"
 sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 
 ```  
-mkdir data
 
-Download: http://ergast.com/downloads/f1db_csv.zip 
+Note: actual data regarding Formula 1 results is downloaded from http://ergast.com/downloads/f1db_csv.zip . This zip-file is refreshed frequently with the latest results. There is a risk that a future version of that file will not have the exact same structure as the data import routines in file F1Data_Import_csv.sql expect - or that this file for whatever reason is no longer available. To prepare for that eventuality, a copy taken on 14th April 2023 is stored in directory *historical_data*. In case the file cannot be retrieved successfully from http://ergast.com/downloads, you can use this file as an alternative. 
 
-mkdir f1data
-cd f1data
-wget http://ergast.com/downloads/f1db_csv.zip
+In that case, you will have to create a new terminal window and execute these steps:
+```
+cp /workspace/modern-oracle-database-programming/historical-data/f1db_csv-as-of-20230414.zip /workspace/modern-oracle-database-programming/f1data/f1db_csv.zip
+# proceed with the regular code:
 unzip -q f1db_csv.zip
+# all csv data files are now in directory /workspace/modern-oracle-database-programming/f1data - ready to be used in external table definitions inside the container
+cd ..
+# copy csv files into the container - make them available at /f1data inside the container
+docker cp f1data/. 23cfree:/f1data &&
+# copy directory f1data to /tmp and make writable - as required for Oracle external tables 
+echo "cp -r /f1data /tmp && chmod +777 /tmp/f1data" > copyToTmpCommand && chmod +777 copyToTmpCommand && docker cp copyToTmpCommand 23cfree:/tmp && docker exec -it 23cfree bash /tmp/copyToTmpCommand
+# create a directory f1_csv_dir to connect from database to local directory /tmp/f1data (inside container)
+# create one external table file_ext using the directory f1_csv_dir to retrieve data from csv files and insert into tables in f1data schema Note: this step can take several minutes - it processes several 100Ks of records
+gp sync-await database-started &&
+/workspace/modern-oracle-database-programming/sqlcl/bin/sql sys/"TheSuperSecret1509!"@localhost:1521/FREEPDB1 as sysdba @"F1Data_Create_Directory.sql" && 
+/workspace/modern-oracle-database-programming/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 @"F1Data_Import_csv.sql"
 
-Unizp the zip file
-
-use modified F1Data_Import_Data/sql to load data through external tables into "real" tables
 
 
 # Apress Source Code
