@@ -20,11 +20,9 @@ tasks:
       sleep 3s && 
       echo "Oracle Database 23c Free is running. The database is accessible at localhost, port 1521; CDB database SID = FREE and has an additional user f1data/Formula1Database! in PDB FREEPDB1 " && 
       gp sync-done database-started &&
-      docker exec -it 23cfree  sqlplus sys/TheSuperSecret1509! as sysdba
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 
   - name: Open SQLcl for user f1data
     init: |
-      gp sync-await database-running
-    command: |
       mkdir f1data
       cd f1data
       # Download the latest CSV files from the Ergast Developer API website.
@@ -32,6 +30,7 @@ tasks:
       unzip -q f1db_csv.zip
       # all csv data files are now in directory /workspace/modern-oracle-database-programming/f1data - ready to be used in external table definitions inside the container
       cd ..
+      gp sync-await database-running &&
       # copy csv files into the container - make them available at /f1data inside the container
       docker cp f1data/. 23cfree:/f1data &&
       # copy directory f1data to /tmp and make writable - as required for Oracle external tables 
@@ -41,6 +40,10 @@ tasks:
       gp sync-await database-started &&
       /workspace/modern-oracle-database-programming/sqlcl/bin/sql sys/"TheSuperSecret1509!"@localhost:1521/FREEPDB1 as sysdba @"F1Data_Create_Directory.sql" && 
       /workspace/modern-oracle-database-programming/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 @"F1Data_Import_csv.sql"
+    command: |
+      # once the database is (re)started, run SQLcl as user f1data - ready to start querying
+      gp sync-await database-started &&
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 
 
 ports:
 
