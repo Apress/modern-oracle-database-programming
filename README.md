@@ -15,6 +15,10 @@ alias sql="/workspace/modern-oracle-database-programming/sqlcl/bin/sql"
 sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 
 ```  
 
+The table schema that user *f1data* has when the workspace is up and running - taken from the front matter in Alex's and Patrick's book - is shown here:
+
+![](images/database-schema-f1data.png)
+
 Note: actual data regarding Formula 1 results is downloaded from http://ergast.com/downloads/f1db_csv.zip . This zip-file is refreshed frequently with the latest results. There is a risk that a future version of that file will not have the exact same structure as the data import routines in file F1Data_Import_csv.sql expect - or that this file for whatever reason is no longer available. To prepare for that eventuality, a copy taken on 14th April 2023 is stored in directory *historical_data*. In case the file cannot be retrieved successfully from http://ergast.com/downloads, you can use this file as an alternative. 
 
 In that case, you will have to create a new terminal window and execute these steps:
