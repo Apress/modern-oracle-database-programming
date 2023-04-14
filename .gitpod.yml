@@ -10,8 +10,8 @@ tasks:
       sleep 20s &&       
       gp sync-done database-running &&
       touch db-running &&
-      /workspace/gitpod-oracle-database-23c-free/sqlcl/bin/sql sys/"TheSuperSecret1509!"@localhost:1521/free as sysdba @"F1Data_Create_User.sql" && 
-      /workspace/gitpod-oracle-database-23c-free/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 @"F1Data_setup-schema.sql" 
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql sys/"TheSuperSecret1509!"@localhost:1521/free as sysdba @"F1Data_Create_User.sql" && 
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 @"F1Data_setup-schema.sql" 
   - name: start container and run SQL*Plus session as user SYS
     init: gp sync-await database-running
     command: |
@@ -25,8 +25,20 @@ tasks:
     init: |
       gp sync-await database-running
     command: |
+      mkdir f1data
+      cd f1data
+      # Download the latest CSV files from the Ergast Developer API website.
+      wget http://ergast.com/downloads/f1db_csv.zip
+      unzip -q f1db_csv.zip
+      # all csv data files are now in directory /workspace/modern-oracle-database-programming/f1data - ready to be used in external table definitions inside the container
+      cd ..
+      # copy csv files into the container - make them available at /f1data inside the container
+      docker cp f1data/. 23cfree:/f1data &&
+      # copy directory f1data to /tmp and make writable - as required for Oracle external tables 
+      echo "cp -r /f1data /tmp && chmod +777 /tmp/f1data" > copyToTmpCommand && chmod +777 copyToTmpCommand && docker cp copyToTmpCommand 23cfree:/tmp && docker exec -it 23cfree bash /tmp/copyToTmpCommand
       gp sync-await database-started &&
-      /workspace/gitpod-oracle-database-23c-free/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql sys/"TheSuperSecret1509!"@localhost:1521/FREEPDB1 as sysdba @"F1Data_Create_Directory.sql" && 
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 
 
 ports:
 
