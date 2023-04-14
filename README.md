@@ -11,9 +11,22 @@ You can use the VS Code Oracle Developer Tools extension for VS Code - which is 
 SQLcl command line tool (see [SQLcl introduction](https://www.oracle.com/database/sqldeveloper/technologies/sqlcl/) for details) has also been installed and can be accessed using:
 
 ```
-alias sql="/workspace/gitpod-oracle-database-23c-free/sqlcl/bin/sql"
+alias sql="/workspace/modern-oracle-database-programming/sqlcl/bin/sql"
 sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 
 ```  
+mkdir data
+
+Download: http://ergast.com/downloads/f1db_csv.zip 
+
+mkdir f1data
+cd f1data
+wget http://ergast.com/downloads/f1db_csv.zip
+unzip -q f1db_csv.zip
+
+Unizp the zip file
+
+use modified F1Data_Import_Data/sql to load data through external tables into "real" tables
+
 
 # Apress Source Code
 
