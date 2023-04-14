@@ -38,7 +38,7 @@
         {
             "authenticationType": 2,
             "dBAPrivilege": "None",
-            "userID": "f1data",
+            "userID": "F1DATA",
             "passwordSaved": true,
             "password": "Formula1Database!",
             "dataSource": "localhost:1521/FREEPDB1",
@@ -46,7 +46,7 @@
             "databaseHostName": "localhost",
             "databasePortNumber": "1521",
             "databaseServiceName": "FREEPDB1",
-            "name": "f1data.FREEPDB1",
+            "name": "F1DATA.FREEPDB1",
             "currentSchema": "",
             "tnsAdmin": "/home/gitpod/Oracle/network/admin"
         }
