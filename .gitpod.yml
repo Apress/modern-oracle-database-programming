@@ -1,0 +1,57 @@
+tasks:
+  - init: |
+      docker pull container-registry.oracle.com/database/free 
+      docker run -d -it --name 23cfree -p 1521:1521 -p 5500:5500 -p 8080:8080 -p 8443:8443 -e ORACLE_PWD=TheSuperSecret1509! container-registry.oracle.com/database/free:latest
+      # open the readme.md document in VS code; note: thanks to the configuration in .vscode/settings.json, the document opens in markdown preview mode
+      gp open README.md
+      alias sql="/workspace/gitpod-oracle-database-23c-free/sqlcl/bin/sql"
+      wget https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip && unzip -q sqlcl-latest.zip && 
+      echo "done with download and unzip SQLcl and now sleep for 20 seconds until db is running" 
+      sleep 20s &&       
+      gp sync-done database-running &&
+      touch db-running &&
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql sys/"TheSuperSecret1509!"@localhost:1521/free as sysdba @"F1Data_Create_User.sql" && 
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 @"F1Data_setup-schema.sql" 
+  - name: start container and run SQL*Plus session as user SYS
+    init: gp sync-await database-running
+    command: |
+      docker start 23cfree   &&
+      docker ps &&  
+      sleep 3s && 
+      echo "Oracle Database 23c Free is running. The database is accessible at localhost, port 1521; CDB database SID = FREE and has an additional user f1data/Formula1Database! in PDB FREEPDB1 " && 
+      gp sync-done database-started &&
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 
+  - name: Open SQLcl for user f1data
+    init: |
+      mkdir f1data
+      cd f1data
+      # Download the latest CSV files from the Ergast Developer API website.
+      wget http://ergast.com/downloads/f1db_csv.zip
+      unzip -q f1db_csv.zip
+      # all csv data files are now in directory /workspace/modern-oracle-database-programming/f1data - ready to be used in external table definitions inside the container
+      cd ..
+      gp sync-await database-running &&
+      # copy csv files into the container - make them available at /f1data inside the container
+      docker cp f1data/. 23cfree:/f1data &&
+      # copy directory f1data to /tmp and make writable - as required for Oracle external tables 
+      echo "cp -r /f1data /tmp && chmod +777 /tmp/f1data" > copyToTmpCommand && chmod +777 copyToTmpCommand && docker cp copyToTmpCommand 23cfree:/tmp && docker exec -it 23cfree bash /tmp/copyToTmpCommand
+      # create a directory f1_csv_dir to connect from database to local directory /tmp/f1data (inside container)
+      # create one external table file_ext using the directory f1_csv_dir to retrieve data from csv files and insert into tables in f1data schema Note: this step can take several minutes - it processes several 100Ks of records
+      gp sync-await database-started &&
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql sys/"TheSuperSecret1509!"@localhost:1521/FREEPDB1 as sysdba @"F1Data_Create_Directory.sql" && 
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 @"F1Data_Import_csv.sql"
+    command: |
+      # once the database is (re)started, run SQLcl as user f1data - ready to start querying
+      gp sync-await database-started &&
+      /workspace/modern-oracle-database-programming/sqlcl/bin/sql f1data/"Formula1Database!"@localhost:1521/FREEPDB1 
+
+ports:
+
+  # Oracle Database 23c Free
+  - port: 1521
+    onOpen: ignore
+    visibility: private
+
+vscode:
+  extensions:
+    - Oracle.oracledevtools
